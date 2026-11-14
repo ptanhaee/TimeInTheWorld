@@ -1,0 +1,43 @@
+<Window x:Class="Time_in_the_World.WeatherCityWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Choose weather city" Width="600" Height="680" MinWidth="470" MinHeight="540"
+        WindowStartupLocation="CenterOwner" ShowInTaskbar="False" Style="{StaticResource {x:Type Window}}">
+    <Grid Margin="28">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <StackPanel Margin="0,0,0,22">
+            <TextBlock Text="Weather, where you want it" FontSize="25" FontWeight="SemiBold"/>
+            <TextBlock x:Name="ClockDescription" Foreground="{StaticResource MutedBrush}" TextWrapping="Wrap" Margin="0,8,0,0"/>
+            <TextBlock x:Name="SavedCity" Foreground="{StaticResource AccentBrush}" TextWrapping="Wrap" Margin="0,8,0,0"/>
+        </StackPanel>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+            <TextBox x:Name="SearchBox" AutomationProperties.Name="Weather city search" ToolTip="City name, optionally followed by a country" TextChanged="SearchBox_TextChanged" KeyDown="SearchBox_KeyDown"/>
+            <Button x:Name="SearchButton" Grid.Column="1" Content="Search" Margin="10,0,0,0" Click="Search_Click"/>
+        </Grid>
+        <TextBlock x:Name="SearchStatus" Grid.Row="2" Text="Search a city, then select the matching region and country." Foreground="{StaticResource MutedBrush}" Margin="0,12" TextWrapping="Wrap"/>
+        <ListBox x:Name="CityList" Grid.Row="3" Background="{StaticResource SurfaceBrush}" BorderThickness="0"
+                 ScrollViewer.HorizontalScrollBarVisibility="Disabled" SelectionChanged="CityList_SelectionChanged" AutomationProperties.Name="Matching weather cities">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel>
+                        <TextBlock Text="{Binding Name}" FontWeight="SemiBold"/>
+                        <TextBlock Text="{Binding DisplayName}" Foreground="{StaticResource MutedBrush}" TextWrapping="Wrap" FontSize="12" Margin="0,4,0,0"/>
+                        <TextBlock Text="{Binding TimeZoneId}" Foreground="{StaticResource MutedBrush}" FontSize="11" Margin="0,4,0,0"/>
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        <TextBlock Grid.Row="4" Text="Weather uses this city's location and local forecast times. Your clock's time zone stays the same. City search needs an internet connection." Foreground="{StaticResource MutedBrush}" FontSize="12" TextWrapping="Wrap" Margin="0,16,0,20"/>
+        <Grid Grid.Row="5">
+            <Button x:Name="RemoveButton" Content="Remove weather" HorizontalAlignment="Left" Padding="12,11" Click="Remove_Click"/>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Content="Cancel" IsCancel="True" Margin="0,0,10,0"/>
+                <Button x:Name="SaveButton" Content="Save city" Style="{StaticResource PrimaryButton}" IsEnabled="False" Click="Save_Click"/>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>

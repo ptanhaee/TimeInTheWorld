@@ -1,0 +1,136 @@
+<Window x:Class="Time_in_the_World.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:Time_in_the_World"
+        Title="Time in the World" Width="1600" Height="1340" MinWidth="720" MinHeight="540"
+        WindowStartupLocation="CenterScreen" Style="{StaticResource {x:Type Window}}">
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="VisibleIfTrue"/>
+        <DataTemplate x:Key="PeriodAverage" DataType="{x:Type local:WeatherPeriod}">
+            <Border Background="#141B27" CornerRadius="7" Padding="6,8" ToolTip="{Binding ToolTip}">
+                <StackPanel>
+                    <TextBlock Text="{Binding Name}" FontSize="10" Foreground="{StaticResource MutedBrush}" HorizontalAlignment="Center"/>
+                    <TextBlock Text="{Binding Icon}" FontFamily="Segoe UI Symbol" FontSize="18" Foreground="{StaticResource AccentBrush}" HorizontalAlignment="Center" Margin="0,4,0,0"/>
+                    <TextBlock Text="{Binding Temperature}" FontSize="16" FontWeight="SemiBold" HorizontalAlignment="Center"/>
+                    <TextBlock Text="{Binding Description}" FontSize="10" TextWrapping="Wrap" TextAlignment="Center" Margin="0,2,0,0"/>
+                    <TextBlock Text="{Binding Hours}" FontSize="9" Foreground="{StaticResource MutedBrush}" TextWrapping="Wrap" TextAlignment="Center" Margin="0,4,0,0"/>
+                </StackPanel>
+            </Border>
+        </DataTemplate>
+        <DataTemplate x:Key="DayRow" DataType="{x:Type local:DailyForecast}">
+            <Grid Margin="0,4" ToolTip="{Binding ToolTip}" Background="Transparent">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="32"/>
+                    <ColumnDefinition Width="38"/>
+                    <ColumnDefinition Width="20"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="{Binding DayName}" FontSize="12" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                <TextBlock Grid.Column="1" Text="{Binding DateLabel}" FontSize="10" Foreground="{StaticResource MutedBrush}" VerticalAlignment="Center"/>
+                <TextBlock Grid.Column="2" Text="{Binding Icon}" FontFamily="Segoe UI Symbol" FontSize="14" Foreground="{StaticResource AccentBrush}" VerticalAlignment="Center"/>
+                <TextBlock Grid.Column="3" Text="{Binding Description}" FontSize="10" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                <StackPanel Grid.Column="4" Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="{Binding High}" FontSize="12" FontWeight="SemiBold" MinWidth="26" TextAlignment="Right"/>
+                    <TextBlock Text="{Binding Low}" FontSize="12" Foreground="{StaticResource MutedBrush}" MinWidth="30" TextAlignment="Right"/>
+                </StackPanel>
+            </Grid>
+        </DataTemplate>
+    </Window.Resources>
+    <Grid Margin="32,28">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid Margin="0,0,0,26">
+            <StackPanel>
+                <TextBlock Text="A LITTLE CLOSER, ACROSS TIME ZONES" FontSize="11" Foreground="{StaticResource AccentBrush}"/>
+                <TextBlock Text="Time in the World" FontSize="32" FontWeight="SemiBold" Margin="0,7,0,5"/>
+                <TextBlock Text="Your places. One shared moment." Foreground="{StaticResource MutedBrush}"/>
+            </StackPanel>
+            <Button Content="＋  Add clock" Style="{StaticResource PrimaryButton}" HorizontalAlignment="Right" VerticalAlignment="Center" Click="AddClock_Click"/>
+        </Grid>
+        <Border Grid.Row="1" Padding="16,12" Background="#192331" CornerRadius="8" Margin="0,0,0,20">
+            <DockPanel>
+                <TextBlock Text="●  LIVE" Foreground="{StaticResource AccentBrush}" FontSize="12" VerticalAlignment="Center"/>
+                <TextBlock x:Name="LocalTimeText" HorizontalAlignment="Right" Foreground="{StaticResource MutedBrush}"/>
+            </DockPanel>
+        </Border>
+        <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+            <Grid>
+                <ItemsControl ItemsSource="{Binding Clocks}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate><WrapPanel/></ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate DataType="{x:Type local:ClockModel}">
+                            <Border Width="280" Margin="0,0,16,16" Padding="20" Background="{StaticResource SurfaceBrush}" BorderBrush="#2B3547" BorderThickness="1" CornerRadius="14">
+                                <StackPanel>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                        <StackPanel>
+                                            <TextBlock Text="{Binding Name}" FontSize="21" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" ToolTip="{Binding Name}"/>
+                                            <TextBlock Text="{Binding Offset}" Foreground="{StaticResource MutedBrush}" FontSize="12" Margin="0,4,0,0" ToolTip="{Binding ZoneName}"/>
+                                        </StackPanel>
+                                        <Button Grid.Column="1" Content="×" FontSize="19" Padding="10,2" VerticalAlignment="Top" Background="Transparent" Foreground="{StaticResource MutedBrush}" ToolTip="Remove this clock" AutomationProperties.Name="Remove clock" Click="RemoveClock_Click"/>
+                                    </Grid>
+                                    <local:AnalogClock Time="{Binding Time}" Width="160" Height="160" Margin="0,17,0,12"/>
+                                    <TextBlock Text="{Binding DigitalTime}" FontSize="32" FontFamily="Consolas" HorizontalAlignment="Center"/>
+                                    <TextBlock Text="{Binding Date}" HorizontalAlignment="Center" Foreground="{StaticResource MutedBrush}" Margin="0,3,0,16"/>
+                                    <Border Height="1" Background="#303A4D"/>
+                                    <DockPanel Margin="0,13,0,0">
+                                        <TextBlock Text="{Binding Period}" Foreground="{StaticResource AccentBrush}" FontSize="10" VerticalAlignment="Center"/>
+                                        <TextBlock Text="{Binding DayRelation}" HorizontalAlignment="Right" Foreground="{StaticResource MutedBrush}" FontSize="11"/>
+                                    </DockPanel>
+                                    <Border Height="1" Background="#303A4D" Margin="0,15,0,10"/>
+                                    <StackPanel Visibility="{Binding Weather.HasLocation, Converter={StaticResource VisibleIfTrue}}" Margin="0,0,0,4">
+                                        <TextBlock Text="WEATHER CITY" Foreground="{StaticResource MutedBrush}" FontSize="10" Margin="0,0,0,4"/>
+                                        <TextBlock Text="{Binding Weather.CityDescription}" Foreground="{StaticResource AccentBrush}" FontSize="12" TextWrapping="Wrap"/>
+                                    </StackPanel>
+                                    <TextBlock Text="{Binding Weather.Status}" Visibility="{Binding Weather.HasStatus, Converter={StaticResource VisibleIfTrue}}" Foreground="{StaticResource MutedBrush}" FontSize="11" TextWrapping="Wrap" Margin="0,3,0,6"/>
+                                    <StackPanel Visibility="{Binding Weather.HasWeather, Converter={StaticResource VisibleIfTrue}}">
+                                        <Grid Margin="0,9,0,12">
+                                            <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                                            <TextBlock Text="{Binding Weather.Report.Current.Icon}" FontFamily="Segoe UI Symbol" FontSize="34" Foreground="{StaticResource AccentBrush}" VerticalAlignment="Center" Margin="0,0,12,0" ToolTip="{Binding Weather.Report.Current.Description}"/>
+                                            <StackPanel Grid.Column="1">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="{Binding Weather.Report.Current.Temperature}" FontSize="26" FontWeight="SemiBold"/>
+                                                    <TextBlock Text="NOW" Foreground="{StaticResource MutedBrush}" FontSize="10" VerticalAlignment="Center" Margin="8,0,0,0"/>
+                                                </StackPanel>
+                                                <TextBlock Text="{Binding Weather.Report.Current.Description}" FontSize="12" TextWrapping="Wrap"/>
+                                            </StackPanel>
+                                        </Grid>
+                                        <TextBlock Text="TODAY · AVERAGES" FontSize="10" Foreground="{StaticResource MutedBrush}" Margin="0,0,0,6"/>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                                            <ContentControl Content="{Binding Weather.Report.Morning}" ContentTemplate="{StaticResource PeriodAverage}" Margin="0,0,3,0" Focusable="False"/>
+                                            <ContentControl Grid.Column="1" Content="{Binding Weather.Report.Noon}" ContentTemplate="{StaticResource PeriodAverage}" Margin="3,0" Focusable="False"/>
+                                            <ContentControl Grid.Column="2" Content="{Binding Weather.Report.Night}" ContentTemplate="{StaticResource PeriodAverage}" Margin="3,0,0,0" Focusable="False"/>
+                                        </Grid>
+                                        <TextBlock Text="NEXT 7 DAYS" FontSize="10" Foreground="{StaticResource MutedBrush}" Margin="0,14,0,6"/>
+                                        <Border Background="#141B27" CornerRadius="7" Padding="8,4">
+                                            <ItemsControl ItemsSource="{Binding Weather.Report.NextDays}" ItemTemplate="{StaticResource DayRow}" Focusable="False"/>
+                                        </Border>
+                                        <TextBlock Text="{Binding Weather.Report.UpdatedLabel}" Foreground="{StaticResource MutedBrush}" FontSize="10" Margin="0,9,0,0"/>
+                                        <TextBlock FontSize="10" Margin="0,4,0,10">
+                                            <Hyperlink NavigateUri="https://open-meteo.com/" RequestNavigate="WeatherAttribution_RequestNavigate" Foreground="{StaticResource MutedBrush}">Weather by Open-Meteo</Hyperlink>
+                                        </TextBlock>
+                                    </StackPanel>
+                                    <Button Content="{Binding Weather.CityActionLabel}" ToolTip="{Binding Weather.CityDescription}" Padding="6,6" FontSize="11" HorizontalAlignment="Left" Background="Transparent" Foreground="{StaticResource AccentBrush}" Click="EditWeatherCity_Click"/>
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                <StackPanel x:Name="EmptyState" Visibility="Collapsed" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="24">
+                    <TextBlock Text="A world of time awaits" FontSize="26" HorizontalAlignment="Center"/>
+                    <TextBlock Text="Add a place to start your collection of clocks." Foreground="{StaticResource MutedBrush}" Margin="0,12,0,22"/>
+                    <Button Content="Add your first clock" Style="{StaticResource PrimaryButton}" Click="AddClock_Click" HorizontalAlignment="Center"/>
+                </StackPanel>
+            </Grid>
+        </ScrollViewer>
+        <TextBlock x:Name="StatusText" Grid.Row="3" Margin="0,12,0,0" Foreground="{StaticResource MutedBrush}" FontSize="12" TextWrapping="Wrap"/>
+    </Grid>
+</Window>
