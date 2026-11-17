@@ -31,6 +31,12 @@ then run `publish\Time in the World.exe` (no .NET install needed to run it).
   most common condition; nights crossing a daylight-saving change have 11 or 13
   hours. Daily conditions are Open-Meteo's most significant weather of the day.
   Hover a tile or day for details.
+- Below the daily forecast, **Next week** (tomorrow through day 7) and **Week
+  after** (days 8–14) show date ranges and separate **Day avg** (6 AM–6 PM) and
+  **Night avg** (6 PM–6 AM the following day) temperatures. These are means of
+  hourly temperatures, not daily highs/lows. Night averages include the final
+  following morning and account for daylight saving. An incomplete weekly
+  period displays **Unavailable** without hiding the rest of the forecast.
 - Weather loads immediately on startup and refreshes every 30 minutes. Each
   card fetches independently; a failed request or city edit cannot hide another
   card's weather. There are no internet reachability checks. Failed cards hide

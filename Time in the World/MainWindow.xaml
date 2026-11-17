@@ -36,6 +36,25 @@
                 </StackPanel>
             </Grid>
         </DataTemplate>
+        <DataTemplate x:Key="WeekAverage" DataType="{x:Type local:WeeklyForecast}">
+            <StackPanel Margin="0,10,0,0" ToolTip="{Binding ToolTip}">
+                <TextBlock Text="{Binding Name}" FontSize="10" Foreground="{StaticResource MutedBrush}"/>
+                <TextBlock Text="{Binding DateLabel}" FontSize="10" Foreground="{StaticResource MutedBrush}" Margin="0,2,0,6"/>
+                <Border Background="#141B27" CornerRadius="7" Padding="8">
+                    <Grid>
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                        <StackPanel>
+                            <TextBlock Text="DAY AVG" FontSize="9" Foreground="{StaticResource MutedBrush}" HorizontalAlignment="Center"/>
+                            <TextBlock Text="{Binding DayTemperature}" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0,3,0,0"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1">
+                            <TextBlock Text="NIGHT AVG" FontSize="9" Foreground="{StaticResource MutedBrush}" HorizontalAlignment="Center"/>
+                            <TextBlock Text="{Binding NightTemperature}" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0,3,0,0"/>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+            </StackPanel>
+        </DataTemplate>
     </Window.Resources>
     <Grid Margin="32,28">
         <Grid.RowDefinitions>
@@ -113,6 +132,7 @@
                                         <Border Background="#141B27" CornerRadius="7" Padding="8,4">
                                             <ItemsControl ItemsSource="{Binding Weather.Report.NextDays}" ItemTemplate="{StaticResource DayRow}" Focusable="False"/>
                                         </Border>
+                                        <ItemsControl ItemsSource="{Binding Weather.Report.NextWeeks}" ItemTemplate="{StaticResource WeekAverage}" Focusable="False"/>
                                         <TextBlock Text="{Binding Weather.Report.UpdatedLabel}" Foreground="{StaticResource MutedBrush}" FontSize="10" Margin="0,9,0,0"/>
                                         <TextBlock FontSize="10" Margin="0,4,0,10">
                                             <Hyperlink NavigateUri="https://open-meteo.com/" RequestNavigate="WeatherAttribution_RequestNavigate" Foreground="{StaticResource MutedBrush}">Weather by Open-Meteo</Hyperlink>

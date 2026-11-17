@@ -60,8 +60,18 @@ public sealed record DailyForecast(DateOnly Date, double MaxCelsius, double MinC
     public string ToolTip => $"{Date.ToString("dddd, MMM d", CultureInfo.InvariantCulture)}: {Description}, high {High}C, low {Low}C";
 }
 
+public sealed record WeeklyForecast(string Name, DateOnly StartDate, DateOnly EndDate,
+    double? DayCelsius, double? NightCelsius)
+{
+    public string DateLabel => $"{StartDate.ToString("MMM d", CultureInfo.InvariantCulture)} – {EndDate.ToString("MMM d", CultureInfo.InvariantCulture)}";
+    public string DayTemperature => DayCelsius is { } value ? $"{WeatherCodes.Degrees(value)}C" : "Unavailable";
+    public string NightTemperature => NightCelsius is { } value ? $"{WeatherCodes.Degrees(value)}C" : "Unavailable";
+    public string ToolTip => $"{DateLabel}: averages of hourly temperatures in city time. Day: 6 AM–6 PM. Night: 6 PM–6 AM the following day. Incomplete periods are unavailable.";
+}
+
 public sealed record WeatherReport(WeatherReading Current, WeatherPeriod Morning, WeatherPeriod Noon,
-    WeatherPeriod Night, IReadOnlyList<DailyForecast> NextDays, DateTimeOffset FetchedAt)
+    WeatherPeriod Night, IReadOnlyList<DailyForecast> NextDays, IReadOnlyList<WeeklyForecast> NextWeeks,
+    DateTimeOffset FetchedAt)
 {
     public string UpdatedLabel => $"Updated {FetchedAt.ToLocalTime().ToString("h:mm tt", CultureInfo.InvariantCulture)} · your time";
 }
